@@ -67,6 +67,8 @@ class CurlClient implements ClientInterface
      * @param   RequestInterface    $request
      *
      * @return  resource
+     *
+     * @throws  HttpException
      */
     public function prepareHandle(RequestInterface $request)
     {
@@ -95,10 +97,12 @@ class CurlClient implements ClientInterface
         if ($request->getProtocolVersion()) {
             $protocolVersion = null;
             switch ($request->getProtocolVersion()) {
-                /*case '2.0':
-                    TODO(NoH): only available from php 7.0.7 and up => if PHP version is lower, throw exception
+                case '2.0':
+                    if (version_compare(phpversion(), '7.0.7', '<')) {
+                        throw new HttpException('The PHP version needs to be at least 7.0.7 to use HTTP 2.0');
+                    }
                     $protocolVersion = CURL_HTTP_VERSION_2;
-                    break;*/
+                    break;
                 case '1.1':
                     $protocolVersion = CURL_HTTP_VERSION_1_1;
                     break;
@@ -157,6 +161,8 @@ class CurlClient implements ClientInterface
      * @param   resource    $ch
      *
      * @return  ResponseInterface
+     *
+     * @throws  HttpException
      */
     public function executeHandle($ch)
     {

@@ -99,7 +99,7 @@ class CurlClient implements ClientInterface
             switch ($request->getProtocolVersion()) {
                 case '2.0':
                     if (version_compare(phpversion(), '7.0.7', '<')) {
-                        throw new HttpException('The PHP version needs to be at least 7.0.7 to use HTTP 2.0');
+                        throw new HttpException('You need at least PHP 7.0.7 to use HTTP 2.0');
                     }
                     $protocolVersion = CURL_HTTP_VERSION_2;
                     break;

@@ -270,8 +270,10 @@ class TransportConfigForm extends ConfigForm
         parent::addSubmitButton();
 
         if ($this->getSubForm('transport_form') instanceof ApiTransportForm) {
-            $this->getElement('btn_submit')
-                ->setDecorators(array('ViewHelper'));
+            $btnSubmit = $this->getElement('btn_submit');
+            if ($btnSubmit !== null) {
+                $btnSubmit->setDecorators(array('ViewHelper'));
+            }
 
             $this->addElement(
                 'submit',

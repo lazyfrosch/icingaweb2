@@ -3,6 +3,8 @@
 
 namespace Icinga\Module\Setup;
 
+use Icinga\Data\ConfigObject;
+use Icinga\Data\ResourceFactory;
 use PDOException;
 use Icinga\Web\Form;
 use Icinga\Web\Wizard;
@@ -136,13 +138,20 @@ class WebWizard extends Wizard implements SetupWizard
             if ($authData['type'] === 'db') {
                 $page->setResourceConfig($this->getPageData('setup_auth_db_resource'));
             } elseif ($authData['type'] === 'ldap') {
-                $page->setResourceConfig($this->getPageData('setup_ldap_resource'));
+                $resourceConfig = $this->getPageData('setup_ldap_resource');
+                $page->setResourceConfig($resourceConfig);
 
                 if (! $this->hasPageData('setup_authentication_backend')) {
                     $suggestions = $this->getPageData('setup_ldap_discovery');
                     if (isset($suggestions['backend'])) {
                         $page->populate($suggestions['backend']);
+                    } else {
+                        $page->populate(array());
                     }
+
+                    $page->getSubForm('backend_form')->populateDomains(
+                        ResourceFactory::createResource(new ConfigObject($resourceConfig))
+                    );
                 }
 
                 if ($this->getDirection() === static::FORWARD) {

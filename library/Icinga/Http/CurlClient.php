@@ -130,7 +130,7 @@ class CurlClient implements ClientInterface
             }
 
             list($key, $value) = $this->parseHeaderLine($header);
-            $this->responseHeaders[$key] = $value;
+            $this->responseHeaders[$key] = rtrim($value, "\r\n");
 
             return $size;
         };
